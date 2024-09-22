@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Loremaster</title>
+    <style>
+      /* HTML: <div class="loader"></div> */
+    .pizza {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 8px solid #d1914b;
+      box-sizing: border-box;
+      --c:no-repeat radial-gradient(farthest-side, #d64123 94%,#0000);
+      --b:no-repeat radial-gradient(farthest-side, #000 94%,#0000);
+      background:
+        var(--c) 11px 15px,
+        var(--b) 6px 15px,    
+        var(--c) 35px 23px,
+        var(--b) 29px 15px,    
+        var(--c) 11px 46px,
+        var(--b) 11px 34px,    
+        var(--c) 36px 0px,
+        var(--b) 50px 31px,
+        var(--c) 47px 43px,
+        var(--b) 31px 48px,    
+        #f6d353; 
+      background-size: 15px 15px,6px 6px;
+      animation: l4 3s infinite;
+
+      /* center */
+      position: absolute;
+      top: 28%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    @keyframes l4 {
+      0%     {-webkit-mask:conic-gradient(#0000 0     ,#000 0)}
+      16.67% {-webkit-mask:conic-gradient(#0000 60deg ,#000 0)}
+      33.33% {-webkit-mask:conic-gradient(#0000 120deg,#000 0)}
+      50%    {-webkit-mask:conic-gradient(#0000 180deg,#000 0)}
+      66.67% {-webkit-mask:conic-gradient(#0000 240deg,#000 0)}
+      83.33% {-webkit-mask:conic-gradient(#0000 300deg,#000 0)}
+      100%   {-webkit-mask:conic-gradient(#0000 360deg,#000 0)}
+    }
+
+    body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+.highlight{ background: #D3E18A;}
+.light{ background-color: yellow;}
+
+#results_box {
+  height: 77vh;
+    border: solid;
+    border-radius: 4px;
+    border-color: #000000ab;
+    padding: 0.5em;
+    overflow-y: scroll;
+}
+
+.result {
+  margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    padding: 0.2em;
+    border-style: solid;
+    border-radius: 4px;
+    overflow: hidden;
+    border-color: #0000002e;
+}
+
+.result_text {
+  padding: 0px;
+    max-width: 100%;
+    margin: 0px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.result_context, .fullview_row_context
+{
+  padding: 0px;
+  padding-bottom: 0.3em;
+  margin: 0px;
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+.fullview_row {
+  margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    padding: 0.2em;
+    border-style: solid;
+    border-radius: 4px;
+    overflow: hidden;
+    border-color: #0000002e;
+}
+
+.fullview_row_text {
+  padding: 0px;
+  margin: 0px;
+  font-size: 0.8em;
+}
+
+.fullview_row_text_highlight {
+  font-size: 1.1em;
+}
+
+.fullview_highlight {
+  background: #5e6f09;
+}
+
+.searchbtn {
+  font-weight: 700;
+  font-size: 1em;
+}
+
+#no_results {
+  display: block;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  font-size: 2em;
+  font-weight: 600;
+}
+    </style>
+  </head>
+  <body>
+    <a href="https://github.com/you" style="position: absolute; top: 0; right: 0;">
+      <img decoding="async" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_red_aa0000.png" class="attachment-full size-full" alt="Fork me on GitHub" loading="lazy">
+    </a>
+
+    <img src="icon.png" alt="Rust Logo" width="70" height="70">
+    <span style="font-weight: 600; font-size: 3em; margin-left: 0.2em;">Loremaster</span>
+    
+    <div id="guide">
+      <p>
+        Full-text search in FFXIV text based on Rust(via <a href="https://github.com/ackwell/ironworks">Ironworks</a>) and WebAssembly.
+        Click "Select game install" to choose the game install directory, then type in the search box and click "Search" to search.
+      </p>
+      <p>
+        Choose the folder that contains the "boot" and "game" folders.
+      </p>
+    </div>
+
+    <p>
+      <button id="open_folder">Select game install</button>
+    </p>
+    <p style="margin-top: 0.5em;">
+      <input type="text" id="search" placeholder="Search for" />
+      <input type="checkbox" id="search_regex"/>
+      <label for="search_regex">Regex</label>
+    </p>
+    <p>
+      <button id="search_act" class="searchbtn" disabled>Search</button>
+      <button id="lucky_act" class="searchbtn" disabled style="margin-left: 0.6em;">I'm Feeling Lucky</button>
+    </p>
+
+    <div id="results_box">
+      <!-- centered -->
+      <div id="no_results" style="display: none;">
+        <p>No results!</p>
+        <img src="paissa.png" alt="Rust Logo" style="width: 5em;">
+      </div>
+    </div>
+    <span id="searchcontext" style="font-style: italic;"></span>
+
+    <!-- "popup" div that covers most of the screen -->
+    <div id="fullview_container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); color: white; padding-top: 10vh;">
+      <div id="fullview" style="width: 80%; margin: 0 auto; background-color: #333; padding: 1em; border-radius: 4px;">
+        <div style="position: relative; width: 100%; height: 0;">
+          <a id="close_fullview" style="position: absolute; top: 0; right: 0; background-color: #333; color: white; border: none; font-size: 1.5em;" onclick="window.loremaster.closeFullview()" href="#">X</a>
+        </div>
+
+        <div id="fullviewbody">
+        </div>
+
+      </div>
+
+      <!-- Secondary "window" to the right with up and down scroll buttons -->
+      <div id="fullview_scroll" style="position: fixed; top: 30vh; right: 2vw; width: 2em; height: auto; background-color: #333; color: white; padding: 1em; border-radius: 4px;">
+        <button id="scroll_up" style="width: 100%; margin-bottom: 0.5em;" onclick="window.loremaster.scrollFullviewUp()">▲</button>
+        <button id="scroll_down" style="width: 100%;" onclick="window.loremaster.scrollFullviewDown()">▼</button>
+      </div>
+    </div>
+
+    <!-- fullscreen div with loading text -->
+    <div id="loading" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); color: white; text-align: center; padding-top: 45vh;">
+      <h1>Loading game data files...</h1>
+      <div class="pizza"></div>
+    </div>
+
+    <div id="searching" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); color: white; text-align: center; padding-top: 45vh;">
+      <h1>Searching...</h1>
+      <div class="pizza"></div>
+    </div>
+  
+    <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
+
+      <!-- Here, we have to load the generated JS file directly in the document -->
+    <script src="./bootstrap.js"></script>
+  </body>
+</html>

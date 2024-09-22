@@ -1,0 +1,14 @@
+{
+  "name": "wasm-loremaster",
+  "collaborators": [
+    "goat <goatsdev@protonmail.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "wasm_loremaster_bg.wasm",
+    "wasm_loremaster.js",
+    "wasm_loremaster.d.ts"
+  ],
+  "browser": "wasm_loremaster.js",
+  "types": "wasm_loremaster.d.ts"
+}
