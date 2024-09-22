@@ -3,6 +3,10 @@
   <head>
     <meta charset="utf-8">
     <title>Loremaster</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/asset/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/asset/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/asset/favicon-16x16.png">
+    <link rel="manifest" href="/asset/site.webmanifest">
     <style>
       /* HTML: <div class="loader"></div> */
     .pizza {
@@ -45,6 +49,7 @@
     }
 
     body {
+      background-color: #fff8d8;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 .highlight{ background: #D3E18A;}
@@ -78,7 +83,7 @@
     overflow: hidden;
 }
 
-.result_context, .fullview_row_context
+.result_context
 {
   padding: 0px;
   padding-bottom: 0.3em;
@@ -97,10 +102,32 @@
     border-color: #0000002e;
 }
 
+.fullview_padding {
+  height: 40vh;
+}
+
+.fullview_row_id {
+  float: right;
+    margin-left: auto;
+    margin-right: 0.3em;
+    margin-bottom: 0;
+    margin-top: -0.8em;
+    font-style: italic;
+    font-size: 1.6em;
+    color: #ffffff9c;
+    font-weight: bold;
+}
+
 .fullview_row_text {
   padding: 0px;
   margin: 0px;
+  padding-left: 0.4em;
   font-size: 0.8em;
+  width: 95%;
+}
+
+.fullview_row_text > .highlight {
+    color: #000;
 }
 
 .fullview_row_text_highlight {
@@ -109,6 +136,20 @@
 
 .fullview_highlight {
   background: #5e6f09;
+}
+
+.fullview_title {
+  font-size: 0.9em;
+    font-style: oblique;
+    font-weight: 600;
+    color: #f5f5f5d1;
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.fullview_body {
+  overflow-y: hidden;
+  height: 95%;
 }
 
 .searchbtn {
@@ -124,6 +165,39 @@
   font-size: 2em;
   font-weight: 600;
 }
+
+.scroll-shadows {
+  background:
+    /* Shadow Cover TOP */
+    linear-gradient(
+      #333,
+      rgba(255, 255, 255, 0)
+    ) center top,
+    
+    /* Shadow Cover BOTTOM */
+    linear-gradient(
+      rgba(255, 255, 255, 0), 
+      #333
+    ) center bottom,
+    
+    /* Shadow TOP */
+    radial-gradient(
+      farthest-side at 70% 0,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0)
+    ) center top,
+    
+    /* Shadow BOTTOM */
+    radial-gradient(
+      farthest-side at 70% 100%,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0)
+    ) center bottom;
+  
+  background-repeat: no-repeat;
+  background-size: 100% 40px, 100% 40px, 100% 34px, 100% 34px;
+  background-attachment: local, local, scroll, scroll;
+}
     </style>
   </head>
   <body>
@@ -131,7 +205,7 @@
       <img decoding="async" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_red_aa0000.png" class="attachment-full size-full" alt="Fork me on GitHub" loading="lazy">
     </a>
 
-    <img src="icon.png" alt="Rust Logo" width="70" height="70">
+    <img src="/asset/icon.png" alt="Loremaster Logo" width="70" height="70">
     <span style="font-weight: 600; font-size: 3em; margin-left: 0.2em;">Loremaster</span>
     
     <div id="guide">
@@ -148,38 +222,46 @@
       <button id="open_folder">Select game install</button>
     </p>
     <p style="margin-top: 0.5em;">
-      <input type="text" id="search" placeholder="Search for" />
+      <input type="text" id="search" placeholder="Search for" style="font-size: 1.3em; width: 50%;"/>
       <input type="checkbox" id="search_regex"/>
       <label for="search_regex">Regex</label>
     </p>
     <p>
       <button id="search_act" class="searchbtn" disabled>Search</button>
       <button id="lucky_act" class="searchbtn" disabled style="margin-left: 0.6em;">I'm Feeling Lucky</button>
+      
+      <!-- language picker combo -->
+      <select id="language" style="margin-left: 0.6em;" class="searchbtn">
+        <option value="en">English</option>
+        <option value="de">Deutsch</option>
+        <option value="fr">Français</option>
+        <option value="ja">日本語</option>
+      </select>
     </p>
 
     <div id="results_box">
       <!-- centered -->
       <div id="no_results" style="display: none;">
         <p>No results!</p>
-        <img src="paissa.png" alt="Rust Logo" style="width: 5em;">
+        <img src="/asset/paissa.png" alt="Rust Logo" style="width: 5em;">
       </div>
     </div>
     <span id="searchcontext" style="font-style: italic;"></span>
 
     <!-- "popup" div that covers most of the screen -->
     <div id="fullview_container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); color: white; padding-top: 10vh;">
-      <div id="fullview" style="width: 80%; margin: 0 auto; background-color: #333; padding: 1em; border-radius: 4px;">
+      <div id="fullview" style="width: 80%; margin: 0 auto; background-color: #333; padding: 1em; border-radius: 4px; height: 80vh; overflow-y: clip;">
         <div style="position: relative; width: 100%; height: 0;">
           <a id="close_fullview" style="position: absolute; top: 0; right: 0; background-color: #333; color: white; border: none; font-size: 1.5em;" onclick="window.loremaster.closeFullview()" href="#">X</a>
         </div>
 
-        <div id="fullviewbody">
-        </div>
+        <div id="fullview_title" class="fullview_title"></div>
+        <div id="fullviewbody" class="fullview_body scroll-shadows"></div>
 
       </div>
 
       <!-- Secondary "window" to the right with up and down scroll buttons -->
-      <div id="fullview_scroll" style="position: fixed; top: 30vh; right: 2vw; width: 2em; height: auto; background-color: #333; color: white; padding: 1em; border-radius: 4px;">
+      <div id="fullview_scrollers" style="position: fixed; top: 30vh; right: 2vw; width: 2em; height: auto; background-color: #333; color: white; padding: 1em; border-radius: 4px;">
         <button id="scroll_up" style="width: 100%; margin-bottom: 0.5em;" onclick="window.loremaster.scrollFullviewUp()">▲</button>
         <button id="scroll_down" style="width: 100%;" onclick="window.loremaster.scrollFullviewDown()">▼</button>
       </div>

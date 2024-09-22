@@ -18,7 +18,7 @@ onmessage = async function(e) {
     switch (e.data.type) {
         case "setup":
             {
-                await try_read_sqpack(
+                let numSheets = await try_read_sqpack(
                     e.data.file_dat,
                     e.data.file_index1,
                     e.data.file_index2,
@@ -28,6 +28,7 @@ onmessage = async function(e) {
                 postMessage({
                     type: "setup",
                     status: true,
+                    numSheets: numSheets,
                 });
             }
             break;
@@ -36,7 +37,7 @@ onmessage = async function(e) {
             {
                 // measure execution time in ms
                 const start = performance.now();
-                let search_res = await search(e.data.search);
+                let search_res = await search(e.data.search, e.data.language);
                 const end = performance.now();
                 console.log(`we took ${end - start} ms for '${e.data.search}'`);
                 postMessage({

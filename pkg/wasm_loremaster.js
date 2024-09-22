@@ -184,61 +184,40 @@ function getDataViewMemory0() {
     return cachedDataViewMemory0;
 }
 /**
-*/
-__exports.greet = function() {
-    wasm.greet();
-};
-
-/**
-*/
-__exports.test_log = function() {
-    wasm.test_log();
-};
-
-/**
-* Reads one byte from the file at a given offset. Returns the read byte or 0 if the file is empty
-* See also https://github.com/Badel2/wasm-bindgen-file-reader-test
-* @param {File} file
-* @param {bigint} offset
-* @returns {number}
-*/
-__exports.read_at_offset_sync = function(file, offset) {
-    const ret = wasm.read_at_offset_sync(addHeapObject(file), offset);
-    return ret;
-};
-
-/**
 * @param {File} a_dat
 * @param {File} a_index
 * @param {File} a_index2
-* @param {File} ffxivgame_ver
+* @param {File} _ffxivgame_ver
 * @returns {number}
 */
-__exports.try_read_sqpack = function(a_dat, a_index, a_index2, ffxivgame_ver) {
-    const ret = wasm.try_read_sqpack(addHeapObject(a_dat), addHeapObject(a_index), addHeapObject(a_index2), addHeapObject(ffxivgame_ver));
-    return ret;
+__exports.try_read_sqpack = function(a_dat, a_index, a_index2, _ffxivgame_ver) {
+    const ret = wasm.try_read_sqpack(addHeapObject(a_dat), addHeapObject(a_index), addHeapObject(a_index2), addHeapObject(_ffxivgame_ver));
+    return ret >>> 0;
 };
 
 /**
 * @param {string} search
+* @param {string} language
 * @returns {string}
 */
-__exports.search = function(search) {
-    let deferred2_0;
-    let deferred2_1;
+__exports.search = function(search, language) {
+    let deferred3_0;
+    let deferred3_1;
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
         const ptr0 = passStringToWasm0(search, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.search(retptr, ptr0, len0);
+        const ptr1 = passStringToWasm0(language, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        wasm.search(retptr, ptr0, len0, ptr1, len1);
         var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
         var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-        deferred2_0 = r0;
-        deferred2_1 = r1;
+        deferred3_0 = r0;
+        deferred3_1 = r1;
         return getStringFromWasm0(r0, r1);
     } finally {
         wasm.__wbindgen_add_to_stack_pointer(16);
-        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
+        wasm.__wbindgen_free(deferred3_0, deferred3_1, 1);
     }
 };
 
@@ -317,9 +296,6 @@ function __wbg_get_imports() {
     imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
         takeObject(arg0);
     };
-    imports.wbg.__wbg_alert_98a85020455f1913 = function(arg0, arg1) {
-        alert(getStringFromWasm0(arg0, arg1));
-    };
     imports.wbg.__wbg_new_abda76e883ba8a5f = function() {
         const ret = new Error();
         return addHeapObject(ret);
@@ -345,21 +321,10 @@ function __wbg_get_imports() {
     imports.wbg.__wbg_log_b103404cc5920657 = function(arg0) {
         console.log(getObject(arg0));
     };
-    imports.wbg.__wbg_size_8bb43f42080caff8 = function(arg0) {
-        const ret = getObject(arg0).size;
-        return ret;
-    };
     imports.wbg.__wbg_slice_d96b699131fb71b6 = function() { return handleError(function (arg0, arg1, arg2) {
         const ret = getObject(arg0).slice(arg1, arg2);
         return addHeapObject(ret);
     }, arguments) };
-    imports.wbg.__wbg_name_ed3cda975cce080d = function(arg0, arg1) {
-        const ret = getObject(arg1).name;
-        const ptr1 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len1 = WASM_VECTOR_LEN;
-        getDataViewMemory0().setInt32(arg0 + 4 * 1, len1, true);
-        getDataViewMemory0().setInt32(arg0 + 4 * 0, ptr1, true);
-    };
     imports.wbg.__wbg_new_27399f63bbf3398f = function() { return handleError(function () {
         const ret = new FileReaderSync();
         return addHeapObject(ret);
